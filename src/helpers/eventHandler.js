@@ -27,13 +27,6 @@ export default store => {
   const onPageComplete = eventListeners.onPageComplete(store);
   const onFileAttachmentAnnotationAdded = eventListeners.onFileAttachmentAnnotationAdded(dispatch);
   const onFileAttachmentDataAvailable = eventListeners.onFileAttachmentDataAvailable(dispatch);
-  const onEditorSelectionChange = (range, oldRange) => {
-    if (!range && oldRange) {
-      setIsFreeTextEditorFocused(false);
-    } else if (range && !oldRange) {
-      setIsFreeTextEditorFocused(true);
-    }
-  };
 
   return {
     addEventHandlers: () => {
@@ -63,7 +56,6 @@ export default store => {
       document.addEventListener('mozfullscreenchange', onFullScreenChange);
       document.addEventListener('webkitfullscreenchange', onFullScreenChange);
       document.addEventListener('MSFullscreenChange', onFullScreenChange);
-      window.docViewer.getAnnotationManager().on('onEditorSelectionChanged', onEditorSelectionChange);
     },
     removeEventHandlers: () => {
       core.removeEventListener('beforeDocumentLoaded', onBeforeDocumentLoaded);
@@ -91,7 +83,6 @@ export default store => {
       document.removeEventListener('mozfullscreenchange', onFullScreenChange);
       document.removeEventListener('webkitfullscreenchange', onFullScreenChange);
       document.removeEventListener('MSFullscreenChange', onFullScreenChange);
-      window.docViewer.getAnnotationManager().off('onEditorSelectionChanged', onEditorSelectionChange);
     },
   };
 };
