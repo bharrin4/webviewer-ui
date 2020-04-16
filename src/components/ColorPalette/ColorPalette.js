@@ -14,7 +14,7 @@ const dataElement = 'colorPalette';
 class ColorPalette extends React.PureComponent {
   static propTypes = {
     property: PropTypes.string.isRequired,
-    color: PropTypes.object.isRequired,
+    color: PropTypes.object,
     onStyleChange: PropTypes.func.isRequired,
     overridePalette: PropTypes.array,
   };
@@ -122,13 +122,13 @@ class ColorPalette extends React.PureComponent {
 
   renderCheckMark = bg => {
     const { color } = this.props;
-    const hexColor = color.toHexString();
+    const hexColor = color?.toHexString();
 
     let isColorPicked;
     if (hexColor === null) {
       isColorPicked = bg === 'transparency';
     } else {
-      isColorPicked = hexColor.toLowerCase() === bg.toLowerCase();
+      isColorPicked = hexColor?.toLowerCase() === bg.toLowerCase();
     }
 
     return isColorPicked ? (

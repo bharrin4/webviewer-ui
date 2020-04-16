@@ -5,128 +5,49 @@
   @extend %popup;
   padding: 0;
   overflow: hidden;
+  flex-direction: column;
 
-  // .ql-color-picker, button {
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
+  .rich-text-format {
     display: flex;
+    border-bottom: 1px solid rgba(0, 0, 0, .12);
+    width: 100%;
     justify-content: center;
-    align-items: center;
-    min-width: $button-width;
-    height: 47px;
 
-    &.ql-active {
-      background-color: #F0F0F0;
-      background-color: var(--button-active-color);
-    }
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: $button-width;
+      height: 47px;
 
-    &:active:hover {
-      outline: none;
-    }
+      &.ql-active {
+        background-color: #f0f0f0;
+        background-color: var(--button-active-color);
+      }
 
-    &:hover {
-      background-color: #F6F6F6;
-      background-color: var(--button-hover-color);
-    }
+      &:active:hover {
+        outline: none;
+      }
 
-    .Icon {
-      width: $popup-icon-width;
-      height: $popup-icon-height;
-    }
-  }
+      &:hover {
+        background-color: #f6f6f6;
+        background-color: var(--button-hover-color);
+      }
 
-  // .ql-color-picker {
-  //   width: 20px;
-  //   height: 19px;
-  //   margin-right: -2px;
-  //   outline: none;
-
-  //   &.ql-expanded {
-  //     .ql-picker-options {
-  //       display: block;
-  //       margin-top: -1px;
-  //       top: 100%;
-  //       z-index: 1;
-  //     }
-  //   }
-
-  //   .ql-picker-label {
-  //     outline: none;
-  //   }
-
-  //   .ql-picker-options {
-  //     background-color: #fafafa;
-  //     min-width: 100%;
-  //     width: 152px;
-  //     padding: 4px 8px;
-  //     position: absolute;
-  //     white-space: nowrap;
-  //     padding: 3px 5px;
-
-  //     .ql-picker-item {
-  //       display: block;
-  //       border: 1px solid transparent;
-  //       float: left;
-  //       height: 26px;
-  //       margin: 1px;
-  //       // padding: 0;
-  //       // padding-top: 5px;
-  //       width: 30px;
-  //       cursor: pointer;
-  //       // display: block;
-  //       padding-bottom: 5px;
-  //     }
-  //   }
-
-  //   svg {
-  //     width: 20px;
-  //     height: 19px;
-  //   }
-
-  //   .ql-color-label.ql-stroke {
-  //     stroke-width: 1;
-  //   }
-  // }
-
-  // .ql-formats {
-  //   display: flex;
-  // }
-}
-
-.ql-container {
-  margin: 0px;
-
-  .ql-editor {
-    height: 100%;
-    outline: none;
-    overflow-y: auto;
-    tab-size: 4;
-    text-align: left;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-
-    & > * {
-      cursor: text;
-    }
-
-    p {
-      margin: 0;
-      padding: 0;
+      .Icon {
+        width: $popup-icon-width;
+        height: $popup-icon-height;
+      }
     }
   }
-}
 
-.ql-clipboard {
-  position: absolute;
-  height: 1px;
-  top: 50%;
-  left: -100000px;
-  overflow-y: hidden;
-
-  p {
-    margin: 0;
-    padding: 0;
+  .ColorPalette {
+    width: 256px;
+    padding: 10px;
+    background-color: #fafafa;
+    margin-top: 0px;
   }
 }

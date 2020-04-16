@@ -61,6 +61,8 @@ const getEventToObjectMap = () => {
     setNoteText: annotManager,
     editorFocus: annotManager,
     editorBlur: annotManager,
+    editorTextChanged: annotManager,
+    editorSelectionChanged: annotManager,
     fileAttachmentDataAvailable: window.docViewer,
   };
 };
