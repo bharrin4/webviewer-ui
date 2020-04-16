@@ -24,7 +24,7 @@ const RichTextPopup = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const onAnnotationDoubleClicked = annotation => {
+    const handleEditorFocus = (editor, annotation) => {
       if (annotation instanceof window.Annotations.FreeTextAnnotation) {
         const position = getAnnotationPopupPositionBasedOn(annotation, popupRef);
         setPosition(position);
@@ -32,8 +32,17 @@ const RichTextPopup = () => {
       }
     };
 
-    core.addEventListener('annotationDoubleClicked', onAnnotationDoubleClicked);
-    return () => core.removeEventListener('annotationDoubleClicked', onAnnotationDoubleClicked);
+    core.addEventListener('editorFocus', handleEditorFocus);
+    return () => core.removeEventListener('editorFocus', handleEditorFocus);
+  }, [dispatch]);
+
+  useEffect(() => {
+    const handleEditorBlur = () => {
+      dispatch(actions.closeElements(['richTextPopup']));
+    };
+
+    core.addEventListener('editorBlur', handleEditorBlur);
+    return () => core.removeEventListener('editorBlur', handleEditorBlur);
   }, [dispatch]);
 
   return isDisabled ? null : (
