@@ -43,7 +43,7 @@ const RichTextPopup = () => {
       }
     };
 
-    core.addEventListener('editorSelectionChanged', handleSelectionChanged);
+    // core.addEventListener('editorSelectionChanged', handleSelectionChanged);
     return () => core.removeEventListener('editorSelectionChanged', handleSelectionChanged);
   }, []);
 
@@ -58,7 +58,7 @@ const RichTextPopup = () => {
       }
     };
 
-    core.addEventListener('editorFocus', handleEditorFocus);
+    // core.addEventListener('editorFocus', handleEditorFocus);
     return () => core.removeEventListener('editorFocus', handleEditorFocus);
   }, [dispatch]);
 
@@ -68,7 +68,7 @@ const RichTextPopup = () => {
       editorRef.current = null;
     };
 
-    core.addEventListener('editorBlur', handleEditorBlur);
+    // core.addEventListener('editorBlur', handleEditorBlur);
     return () => core.removeEventListener('editorBlur', handleEditorBlur);
   }, [dispatch]);
 
