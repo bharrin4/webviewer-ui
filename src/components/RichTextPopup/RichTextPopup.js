@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Draggable from 'react-draggable';
 import classNames from 'classnames';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 
@@ -20,7 +21,8 @@ const RichTextPopup = () => {
     ],
     shallowEqual
   );
-  const [position, setPosition] = useState({ left: 0, top: 0 });
+  const [cssPosition, setCssPosition] = useState({ left: 0, top: 0 });
+  const [draggablePosition, setDraggablePosition] = useState({ x: 0, y: 0 });
   const [color, setColor] = useState(null);
   const popupRef = useRef(null);
   const editorRef = useRef(null);
@@ -51,7 +53,10 @@ const RichTextPopup = () => {
     const handleEditorFocus = (editor, annotation) => {
       if (annotation instanceof window.Annotations.FreeTextAnnotation) {
         const position = getAnnotationPopupPositionBasedOn(annotation, popupRef);
-        setPosition(position);
+        setCssPosition(position);
+        // when the editor is focused, we want to reset any previous drag movements so that
+        // the popup will be positioned centered to the editor
+        setDraggablePosition({ x: 0, y: 0 });
 
         editorRef.current = editor;
         dispatch(actions.openElements(['richTextPopup']));
@@ -83,38 +88,48 @@ const RichTextPopup = () => {
     }
   };
 
+  const syncDraggablePosition = (e, { x, y }) => {
+    setDraggablePosition({ x, y });
+  };
+
   return isDisabled ? null : (
-    <div
-      id="ql-toolbar"
-      className={classNames({
-        Popup: true,
-        RichTextPopup: true,
-        open: isOpen,
-        closed: !isOpen,
-      })}
-      ref={popupRef}
-      data-element="richTextPopup"
-      style={{ ...position }}
+    <Draggable
+      position={draggablePosition}
+      onDrag={syncDraggablePosition}
+      onStop={syncDraggablePosition}
       // prevent the blur event from being triggered when clicking on toolbar buttons
       // otherwise we can't style the text since a blur event is triggered before a click event
       onMouseDown={e => e.preventDefault()}
     >
-      <div className="rich-text-format">
-        <button className="ql-bold" data-element="richTextBoldButton">
-          <Icon glyph="icon-text-bold" />
-        </button>
-        <button className="ql-italic" data-element="richTextItalicButton">
-          <Icon glyph="icon-text-italic" />
-        </button>
-        <button className="ql-underline" data-element="richTextUnderlineButton">
-          <Icon glyph="ic_annotation_underline_black_24px" />
-        </button>
-        <button className="ql-strike" data-element="richTextStrikeButton">
-          <Icon glyph="ic_annotation_strikeout_black_24px" />
-        </button>
+      <div
+        id="ql-toolbar"
+        className={classNames({
+          Popup: true,
+          RichTextPopup: true,
+          open: isOpen,
+          closed: !isOpen,
+        })}
+        ref={popupRef}
+        data-element="richTextPopup"
+        style={{ ...cssPosition }}
+      >
+        <div className="rich-text-format">
+          <button className="ql-bold" data-element="richTextBoldButton">
+            <Icon glyph="icon-text-bold" />
+          </button>
+          <button className="ql-italic" data-element="richTextItalicButton">
+            <Icon glyph="icon-text-italic" />
+          </button>
+          <button className="ql-underline" data-element="richTextUnderlineButton">
+            <Icon glyph="ic_annotation_underline_black_24px" />
+          </button>
+          <button className="ql-strike" data-element="richTextStrikeButton">
+            <Icon glyph="ic_annotation_strikeout_black_24px" />
+          </button>
+        </div>
+        <ColorPalette color={color} property="TextColor" onStyleChange={handleColorChange} />
       </div>
-      <ColorPalette color={color} property="TextColor" onStyleChange={handleColorChange} />
-    </div>
+    </Draggable>
   );
 };
 
