@@ -39,7 +39,7 @@ const RichTextPopup = () => {
           const color = new window.Annotations.Color(format.color);
 
           setColor(color);
-        } else if (Array.isArray(format.color)) {
+        } else if (Array.isArray(format.color) || !format.color) {
           // the selection contains multiple color, so we set the current color to null
           setColor(null);
         }
