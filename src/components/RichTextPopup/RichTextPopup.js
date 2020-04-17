@@ -8,7 +8,7 @@ import Tooltip from 'components/Tooltip';
 import ColorPalette from 'components/ColorPalette';
 
 import core from 'core';
-import { getAnnotationPopupPositionBasedOn } from 'helpers/getPopupPosition';
+import getRichTextPopupPosition from 'helpers/getRichTextPopupPosition';
 import actions from 'actions';
 import selectors from 'selectors';
 
@@ -53,7 +53,7 @@ const RichTextPopup = () => {
   useEffect(() => {
     const handleEditorFocus = (editor, annotation) => {
       if (annotation instanceof window.Annotations.FreeTextAnnotation) {
-        const position = getAnnotationPopupPositionBasedOn(annotation, popupRef);
+        const position = getRichTextPopupPosition(annotation, popupRef);
         setCssPosition(position);
         // when the editor is focused, we want to reset any previous drag movements so that
         // the popup will be positioned centered to the editor
