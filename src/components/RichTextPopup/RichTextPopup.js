@@ -27,10 +27,11 @@ const RichTextPopup = () => {
   const [color, setColor] = useState(null);
   const popupRef = useRef(null);
   const editorRef = useRef(null);
+  const annotationRef = useRef(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const handleSelectionChanged = range => {
+    const handleSelectionChange = range => {
       if (range) {
         const { index, length } = range;
         const format = editorRef.current.getFormat(index, length);
@@ -39,15 +40,29 @@ const RichTextPopup = () => {
           const color = new window.Annotations.Color(format.color);
 
           setColor(color);
-        } else if (Array.isArray(format.color) || !format.color) {
+        } else if (Array.isArray(format.color)) {
           // the selection contains multiple color, so we set the current color to null
           setColor(null);
+        } else if (!format.color) {
+          setColor(annotationRef.current.TextColor);
         }
       }
     };
 
-    core.addEventListener('editorSelectionChanged', handleSelectionChanged);
-    return () => core.removeEventListener('editorSelectionChanged', handleSelectionChanged);
+    core.addEventListener('editorSelectionChanged', handleSelectionChange);
+    return () => core.removeEventListener('editorSelectionChanged', handleSelectionChange);
+  }, []);
+
+  useEffect(() => {
+    const handleTextChange = () => {
+      if (annotationRef.current?.isAutoSized()) {
+        const position = getRichTextPopupPosition(annotationRef.current, popupRef);
+        setCssPosition(position);
+      }
+    };
+
+    core.addEventListener('editorTextChanged', handleTextChange);
+    return () => core.removeEventListener('editorTextChanged', handleTextChange);
   }, []);
 
   useEffect(() => {
@@ -60,6 +75,8 @@ const RichTextPopup = () => {
         setDraggablePosition({ x: 0, y: 0 });
 
         editorRef.current = editor;
+        annotationRef.current = annotation;
+
         dispatch(actions.openElements(['richTextPopup']));
       }
     };
@@ -72,6 +89,7 @@ const RichTextPopup = () => {
     const handleEditorBlur = () => {
       dispatch(actions.closeElements(['richTextPopup']));
       editorRef.current = null;
+      annotationRef.current = null;
     };
 
     core.addEventListener('editorBlur', handleEditorBlur);
