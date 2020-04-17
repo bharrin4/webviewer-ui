@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 
 import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import ColorPalette from 'components/ColorPalette';
 
 import core from 'core';
@@ -97,6 +98,7 @@ const RichTextPopup = () => {
       position={draggablePosition}
       onDrag={syncDraggablePosition}
       onStop={syncDraggablePosition}
+      enableUserSelectHack={false}
       // prevent the blur event from being triggered when clicking on toolbar buttons
       // otherwise we can't style the text since a blur event is triggered before a click event
       onMouseDown={e => e.preventDefault()}
@@ -114,18 +116,26 @@ const RichTextPopup = () => {
         style={{ ...cssPosition }}
       >
         <div className="rich-text-format">
-          <button className="ql-bold" data-element="richTextBoldButton">
-            <Icon glyph="icon-text-bold" />
-          </button>
-          <button className="ql-italic" data-element="richTextItalicButton">
-            <Icon glyph="icon-text-italic" />
-          </button>
-          <button className="ql-underline" data-element="richTextUnderlineButton">
-            <Icon glyph="ic_annotation_underline_black_24px" />
-          </button>
-          <button className="ql-strike" data-element="richTextStrikeButton">
-            <Icon glyph="ic_annotation_strikeout_black_24px" />
-          </button>
+          <Tooltip content="option.richText.bold">
+            <button className="ql-bold" data-element="richTextBoldButton">
+              <Icon glyph="icon-text-bold" />
+            </button>
+          </Tooltip>
+          <Tooltip content="option.richText.italic">
+            <button className="ql-italic" data-element="richTextItalicButton">
+              <Icon glyph="icon-text-italic" />
+            </button>
+          </Tooltip>
+          <Tooltip content="option.richText.underline">
+            <button className="ql-underline" data-element="richTextUnderlineButton">
+              <Icon glyph="ic_annotation_underline_black_24px" />
+            </button>
+          </Tooltip>
+          <Tooltip content="option.richText.strikeout">
+            <button className="ql-strike" data-element="richTextStrikeButton">
+              <Icon glyph="ic_annotation_strikeout_black_24px" />
+            </button>
+          </Tooltip>
         </div>
         <ColorPalette color={color} property="TextColor" onStyleChange={handleColorChange} />
       </div>
