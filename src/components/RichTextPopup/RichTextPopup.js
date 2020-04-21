@@ -117,9 +117,15 @@ const RichTextPopup = () => {
       onDrag={syncDraggablePosition}
       onStop={syncDraggablePosition}
       enableUserSelectHack={false}
+      // don't allow drag when clicking on a button element or a color cell
+      cancel="button, .cell"
       // prevent the blur event from being triggered when clicking on toolbar buttons
       // otherwise we can't style the text since a blur event is triggered before a click event
-      onMouseDown={e => e.preventDefault()}
+      onMouseDown={e => {
+        if (!e.touches?.length) {
+          e.preventDefault();
+        }
+      }}
     >
       <div
         id="ql-toolbar"

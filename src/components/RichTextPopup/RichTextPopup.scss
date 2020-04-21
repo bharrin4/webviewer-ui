@@ -50,5 +50,12 @@
     padding: 10px;
     background-color: #fafafa;
     margin-top: 0px;
+
+    .cell {
+      @include mobile {
+        width: 30px;
+        height: 26px;
+      }
+    }
   }
 }
