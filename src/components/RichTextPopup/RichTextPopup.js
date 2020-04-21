@@ -32,7 +32,7 @@ const RichTextPopup = () => {
 
   useEffect(() => {
     const handleSelectionChange = range => {
-      if (range) {
+      if (range && editorRef.current) {
         const { index, length } = range;
         const format = editorRef.current.getFormat(index, length);
 
