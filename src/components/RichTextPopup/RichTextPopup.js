@@ -3,12 +3,10 @@ import Draggable from 'react-draggable';
 import classNames from 'classnames';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 
-import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
 import ColorPalette from 'components/ColorPalette';
+import Button from 'components/Button';
 
 import core from 'core';
-import { isMobileDevice } from 'helpers/device';
 import getRichTextPopupPosition from 'helpers/getRichTextPopupPosition';
 import actions from 'actions';
 import selectors from 'selectors';
@@ -25,31 +23,16 @@ const RichTextPopup = () => {
   );
   const [cssPosition, setCssPosition] = useState({ left: 0, top: 0 });
   const [draggablePosition, setDraggablePosition] = useState({ x: 0, y: 0 });
-  const [color, setColor] = useState(null);
+  const [format, setFormat] = useState({});
   const popupRef = useRef(null);
   const editorRef = useRef(null);
   const annotationRef = useRef(null);
-  const selectionRef = useRef([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const handleSelectionChange = (range, oldRange, source) => {
-      selectionRef.current = [range, oldRange, source];
-
+    const handleSelectionChange = range => {
       if (range && editorRef.current) {
-        const { index, length } = range;
-        const format = editorRef.current.getFormat(index, length);
-
-        if (typeof format.color === 'string') {
-          const color = new window.Annotations.Color(format.color);
-
-          setColor(color);
-        } else if (Array.isArray(format.color)) {
-          // the selection contains multiple color, so we set the current color to null
-          setColor(null);
-        } else if (!format.color) {
-          setColor(annotationRef.current.TextColor);
-        }
+        setFormat(getFormat(range));
       }
     };
 
@@ -63,6 +46,8 @@ const RichTextPopup = () => {
         const position = getRichTextPopupPosition(annotationRef.current, popupRef);
         setCssPosition(position);
       }
+
+      setFormat(getFormat(editorRef.current?.getSelection()));
     };
 
     core.addEventListener('editorTextChanged', handleTextChange);
@@ -100,43 +85,58 @@ const RichTextPopup = () => {
     return () => core.removeEventListener('editorBlur', handleEditorBlur);
   }, [dispatch]);
 
+  const getFormat = range => {
+    if (!range) {
+      return {};
+    }
+
+    const format = editorRef.current.getFormat(range.index, range.length);
+
+    if (typeof format.color === 'string') {
+      format.color = new window.Annotations.Color(format.color);
+    } else if (Array.isArray(format.color)) {
+      // the selection contains multiple color, so we set the current color to null
+      format.color = null;
+    } else if (!format.color) {
+      format.color = annotationRef.current.TextColor;
+    }
+
+    return format;
+  };
+
+  const handleClick = format => () => {
+    const { index, length } = editorRef.current.getSelection();
+    const currentFormat = editorRef.current.getFormat(index, length);
+
+    applyFormat(format, !currentFormat[format]);
+  };
+
   const handleColorChange = (_, color) => {
-    setColor(color);
+    applyFormat('color', color.toHexString());
+  };
+
+  const applyFormat = (formatKey, value) => {
     const { index, length } = editorRef.current.getSelection();
 
     if (length) {
-      editorRef.current.formatText(index, length, { color: color.toHexString() });
+      editorRef.current.formatText(index, length, formatKey, value);
     } else {
-      editorRef.current.format('color', color.toHexString());
+      editorRef.current.format(formatKey, value);
+
+      if (formatKey === 'color') {
+        value = new window.Annotations.Color(value);
+      }
+
+      // format the entire editor doesn't trigger the editorTextChanged event, so we set the format state here
+      setFormat({
+        ...format,
+        [formatKey]: value,
+      });
     }
   };
 
   const syncDraggablePosition = (e, { x, y }) => {
     setDraggablePosition({ x, y });
-  };
-
-  const handleMobileClick = format => () => {
-    // during some testing we found that tapping on the format buttons occasionally removes the selection in the editor
-    // which will cause the current selected range to be null, and thus the format are not being applied
-    // this function work around this issue by re-selecting the previous selected range, and apply the format
-    const [range, oldRange, source] = selectionRef.current;
-
-    if (isMobileDevice && range === null && oldRange && source === 'user') {
-      const editor = editorRef.current;
-      const { index, length } = oldRange;
-
-      editor.focus();
-      editor.setSelection(index, length);
-
-      const currentFormat = editor.getFormat(index, length);
-      const shouldFormat = !currentFormat[format];
-
-      if (length) {
-        editor.formatText(index, length, format, shouldFormat);
-      } else {
-        editor.format(format, shouldFormat);
-      }
-    }
   };
 
   return isDisabled ? null : (
@@ -156,7 +156,6 @@ const RichTextPopup = () => {
       }}
     >
       <div
-        id="ql-toolbar"
         className={classNames({
           Popup: true,
           RichTextPopup: true,
@@ -168,44 +167,36 @@ const RichTextPopup = () => {
         style={{ ...cssPosition }}
       >
         <div className="rich-text-format">
-          <Tooltip content="option.richText.bold">
-            <button
-              className="ql-bold"
-              data-element="richTextBoldButton"
-              onClick={handleMobileClick('bold')}
-            >
-              <Icon glyph="icon-text-bold" />
-            </button>
-          </Tooltip>
-          <Tooltip content="option.richText.italic">
-            <button
-              className="ql-italic"
-              data-element="richTextItalicButton"
-              onClick={handleMobileClick('italic')}
-            >
-              <Icon glyph="icon-text-italic" />
-            </button>
-          </Tooltip>
-          <Tooltip content="option.richText.underline">
-            <button
-              className="ql-underline"
-              data-element="richTextUnderlineButton"
-              onClick={handleMobileClick('underline')}
-            >
-              <Icon glyph="ic_annotation_underline_black_24px" />
-            </button>
-          </Tooltip>
-          <Tooltip content="option.richText.strikeout">
-            <button
-              className="ql-strike"
-              data-element="richTextStrikeButton"
-              onClick={handleMobileClick('strike')}
-            >
-              <Icon glyph="ic_annotation_strikeout_black_24px" />
-            </button>
-          </Tooltip>
+          <Button
+            isActive={format.bold}
+            data-element="richTextBoldButton"
+            onClick={handleClick('bold')}
+            img="icon-text-bold"
+            title="option.richText.bold"
+          />
+          <Button
+            isActive={format.italic}
+            data-element="richTextItalicButton"
+            onClick={handleClick('italic')}
+            img="icon-text-italic"
+            title="option.richText.italic"
+          />
+          <Button
+            isActive={format.underline}
+            data-element="richTextUnderlineButton"
+            onClick={handleClick('underline')}
+            img="ic_annotation_underline_black_24px"
+            title="option.richText.underline"
+          />
+          <Button
+            isActive={format.strike}
+            data-element="richTextStrikeButton"
+            onClick={handleClick('strike')}
+            img="ic_annotation_strikeout_black_24px"
+            title="option.richText.strikeout"
+          />
         </div>
-        <ColorPalette color={color} property="TextColor" onStyleChange={handleColorChange} />
+        <ColorPalette color={format.color} property="TextColor" onStyleChange={handleColorChange} />
       </div>
     </Draggable>
   );
