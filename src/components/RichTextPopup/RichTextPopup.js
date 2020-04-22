@@ -8,6 +8,7 @@ import Tooltip from 'components/Tooltip';
 import ColorPalette from 'components/ColorPalette';
 
 import core from 'core';
+import { isMobileDevice } from 'helpers/device';
 import getRichTextPopupPosition from 'helpers/getRichTextPopupPosition';
 import actions from 'actions';
 import selectors from 'selectors';
@@ -28,10 +29,13 @@ const RichTextPopup = () => {
   const popupRef = useRef(null);
   const editorRef = useRef(null);
   const annotationRef = useRef(null);
+  const selectionRef = useRef([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const handleSelectionChange = range => {
+    const handleSelectionChange = (range, oldRange, source) => {
+      selectionRef.current = [range, oldRange, source];
+
       if (range && editorRef.current) {
         const { index, length } = range;
         const format = editorRef.current.getFormat(index, length);
@@ -111,6 +115,30 @@ const RichTextPopup = () => {
     setDraggablePosition({ x, y });
   };
 
+  const handleMobileClick = format => () => {
+    // during some testing we found that tapping on the format buttons occasionally removes the selection in the editor
+    // which will cause the current selected range to be null, and thus the format are not being applied
+    // this function work around this issue by re-selecting the previous selected range, and apply the format
+    const [range, oldRange, source] = selectionRef.current;
+
+    if (isMobileDevice && range === null && oldRange && source === 'user') {
+      const editor = editorRef.current;
+      const { index, length } = oldRange;
+
+      editor.focus();
+      editor.setSelection(index, length);
+
+      const currentFormat = editor.getFormat(index, length);
+      const shouldFormat = !currentFormat[format];
+
+      if (length) {
+        editor.formatText(index, length, format, shouldFormat);
+      } else {
+        editor.format(format, shouldFormat);
+      }
+    }
+  };
+
   return isDisabled ? null : (
     <Draggable
       position={draggablePosition}
@@ -122,7 +150,7 @@ const RichTextPopup = () => {
       // prevent the blur event from being triggered when clicking on toolbar buttons
       // otherwise we can't style the text since a blur event is triggered before a click event
       onMouseDown={e => {
-        if (!e.touches?.length) {
+        if (e.type !== 'touchstart') {
           e.preventDefault();
         }
       }}
@@ -141,22 +169,38 @@ const RichTextPopup = () => {
       >
         <div className="rich-text-format">
           <Tooltip content="option.richText.bold">
-            <button className="ql-bold" data-element="richTextBoldButton">
+            <button
+              className="ql-bold"
+              data-element="richTextBoldButton"
+              onClick={handleMobileClick('bold')}
+            >
               <Icon glyph="icon-text-bold" />
             </button>
           </Tooltip>
           <Tooltip content="option.richText.italic">
-            <button className="ql-italic" data-element="richTextItalicButton">
+            <button
+              className="ql-italic"
+              data-element="richTextItalicButton"
+              onClick={handleMobileClick('italic')}
+            >
               <Icon glyph="icon-text-italic" />
             </button>
           </Tooltip>
           <Tooltip content="option.richText.underline">
-            <button className="ql-underline" data-element="richTextUnderlineButton">
+            <button
+              className="ql-underline"
+              data-element="richTextUnderlineButton"
+              onClick={handleMobileClick('underline')}
+            >
               <Icon glyph="ic_annotation_underline_black_24px" />
             </button>
           </Tooltip>
           <Tooltip content="option.richText.strikeout">
-            <button className="ql-strike" data-element="richTextStrikeButton">
+            <button
+              className="ql-strike"
+              data-element="richTextStrikeButton"
+              onClick={handleMobileClick('strike')}
+            >
               <Icon glyph="ic_annotation_strikeout_black_24px" />
             </button>
           </Tooltip>
