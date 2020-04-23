@@ -146,7 +146,7 @@ const RichTextPopup = () => {
       onStop={syncDraggablePosition}
       enableUserSelectHack={false}
       // don't allow drag when clicking on a button element or a color cell
-      cancel="button, .cell"
+      cancel=".Button, .cell"
       // prevent the blur event from being triggered when clicking on toolbar buttons
       // otherwise we can't style the text since a blur event is triggered before a click event
       onMouseDown={e => {
