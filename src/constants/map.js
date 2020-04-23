@@ -35,9 +35,9 @@ const map = {
   },
   freeText: {
     icon: 'ic_annotation_freetext_black_24px',
-    iconColor: 'StrokeColor',
-    currentPalette: 'StrokeColor',
-    availablePalettes: ['StrokeColor', 'FillColor'],
+    iconColor: 'TextColor',
+    currentPalette: 'TextColor',
+    availablePalettes: ['TextColor', 'StrokeColor', 'FillColor'],
     toolNames: ['AnnotationCreateFreeText'],
     annotationCheck: annotation =>
       annotation instanceof window.Annotations.FreeTextAnnotation &&
@@ -102,9 +102,9 @@ const map = {
   },
   callout: {
     icon: 'ic_annotation_callout_black_24px',
-    iconColor: 'StrokeColor',
-    currentPalette: 'StrokeColor',
-    availablePalettes: ['StrokeColor', 'FillColor'],
+    iconColor: 'TextColor',
+    currentPalette: 'TextColor',
+    availablePalettes: ['TextColor', 'StrokeColor', 'FillColor'],
     toolNames: ['AnnotationCreateCallout'],
     annotationCheck: annotation =>
       annotation instanceof window.Annotations.FreeTextAnnotation &&

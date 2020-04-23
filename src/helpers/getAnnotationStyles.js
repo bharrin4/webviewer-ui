@@ -41,9 +41,5 @@ export default annotation => {
     style.FontSize = null;
   }
 
-  if (annotation instanceof window.Annotations.FreeTextAnnotation) {
-    style.TextColor = null;
-  }
-
   return style;
 };
