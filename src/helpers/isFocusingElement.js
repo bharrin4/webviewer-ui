@@ -2,7 +2,7 @@ import core from 'core';
 
 export default () => {
   const freetextAnnots = core.getAnnotationsList().filter(annot => annot instanceof window.Annotations.FreeTextAnnotation);
-  const isEditingFreetext = freetextAnnots.some(annot => annot.getEditor()?.hasFocus());
+  const isEditingFreetext = freetextAnnots.some(annot => annot.getEditor()?.getCoreEditor().hasFocus());
 
   const { activeElement } = document;
 

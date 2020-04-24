@@ -63,7 +63,7 @@ const RichTextPopup = () => {
         // the popup will be positioned centered to the editor
         setDraggablePosition({ x: 0, y: 0 });
 
-        editorRef.current = editor;
+        editorRef.current = editor.getCoreEditor();
         annotationRef.current = annotation;
 
         dispatch(actions.openElements(['richTextPopup']));
