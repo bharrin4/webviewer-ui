@@ -63,7 +63,7 @@ const RichTextPopup = () => {
         // the popup will be positioned centered to the editor
         setDraggablePosition({ x: 0, y: 0 });
 
-        editorRef.current = editor.getCoreEditor();
+        editorRef.current = editor;
         annotationRef.current = annotation;
 
         dispatch(actions.openElements(['richTextPopup']));
@@ -116,23 +116,17 @@ const RichTextPopup = () => {
   };
 
   const applyFormat = (formatKey, value) => {
-    const { index, length } = editorRef.current.getSelection();
+    editorRef.current.format(formatKey, value);
 
-    if (length) {
-      editorRef.current.formatText(index, length, formatKey, value);
-    } else {
-      editorRef.current.format(formatKey, value);
-
-      if (formatKey === 'color') {
-        value = new window.Annotations.Color(value);
-      }
-
-      // format the entire editor doesn't trigger the editorTextChanged event, so we set the format state here
-      setFormat({
-        ...format,
-        [formatKey]: value,
-      });
+    if (formatKey === 'color') {
+      value = new window.Annotations.Color(value);
     }
+
+    // format the entire editor doesn't trigger the editorTextChanged event, so we set the format state here
+    setFormat({
+      ...format,
+      [formatKey]: value,
+    });
   };
 
   const syncDraggablePosition = (e, { x, y }) => {
