@@ -13,7 +13,6 @@ import actions from 'actions';
 import selectors from 'selectors';
 
 import AttachmentUpload from '../../AttachmentUpload/AttachmentUpload';
-import CustomEditor from 'src/components/Editor/Editor';
 //TODO: if including RTE capability, include RTE editor
 // import CustomEditor from '../../Editor/Editor';
 
