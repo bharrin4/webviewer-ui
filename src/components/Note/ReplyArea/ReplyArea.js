@@ -12,8 +12,13 @@ import useDidUpdate from 'hooks/useDidUpdate';
 import actions from 'actions';
 import selectors from 'selectors';
 
+import AttachmentUpload from '../../AttachmentUpload/AttachmentUpload';
+import CustomEditor from 'src/components/Editor/Editor';
+//TODO: if including RTE capability, include RTE editor
+// import CustomEditor from '../../Editor/Editor';
+
 const propTypes = {
-  annotation: PropTypes.object.isRequired,
+  annotation: PropTypes.object,
 };
 
 // a component that contains the reply textarea, the reply button and the cancel button
@@ -89,6 +94,7 @@ const ReplyArea = ({ annotation }) => {
       // due to annotation deselection
       onMouseDown={e => e.stopPropagation()}
     >
+      <AttachmentUpload/>
       <AutoResizeTextarea
         ref={el => {
           textareaRef.current = el;
@@ -99,16 +105,20 @@ const ReplyArea = ({ annotation }) => {
         onBlur={() => setIsFocused(false)}
         onFocus={() => setIsFocused(true)}
         placeholder={`${t('action.reply')}...`}
-      />
+      >
+        {/* <CustomEditor placeholder={`${t('action.reply')}...`}/> */}
+      </AutoResizeTextarea>
 
-      {isFocused && (
-        <div className="buttons">
-          <button className={replyBtnClass} onMouseDown={postReply}>
-            {t('action.reply')}
-          </button>
-          <button onMouseDown={handleCancelClick}>{t('action.cancel')}</button>
-        </div>
-      )}
+      {
+        isFocused && (
+          <div className="buttons">
+            <button className={replyBtnClass} onMouseDown={postReply}>
+              {t('action.reply')}
+            </button>
+            <button onMouseDown={handleCancelClick}>{t('action.cancel')}</button>
+          </div>
+        )
+      }
     </div>
   );
 };

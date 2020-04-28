@@ -16,7 +16,7 @@
   }
 
   .replies {
-    margin: 15px 0 0;
+    margin: 0;
     transition: all 1s ease;
 
     .NoteContent {
@@ -30,7 +30,7 @@
     .reply-container {
       display: flex;
       flex-direction: column;
-      margin: 15px 0 0;
+      margin: 0;
       
       textarea {
         width: 100%;
