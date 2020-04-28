@@ -1,0 +1,20 @@
+@import 'filepond/dist/filepond.min.css';
+@import '../../constants/styles';
+
+div.filepond--wrapper {
+  margin-top: 9px;
+}
+
+div.filepond--item {
+  height: 20px;
+}
+
+.filepond--root,
+.filepond--root .filepond--drop-label {
+  min-height: 30px;
+  font-size: 12px !important;
+}
+
+div.filepond--action-process-item, div.filepond--action-retry-item-processing {
+  visibility: hidden;
+}

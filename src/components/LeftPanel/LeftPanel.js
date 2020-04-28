@@ -6,7 +6,6 @@ import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import LeftPanelTabs from 'components/LeftPanelTabs';
 import NotesPanel from 'components/NotesPanel';
 import ThumbnailsPanel from 'components/ThumbnailsPanel';
-import OutlinesPanel from 'components/OutlinesPanel';
 import BookmarksPanel from 'components/BookmarksPanel';
 import LayersPanel from 'components/LayersPanel';
 import CustomElement from 'components/CustomElement';
@@ -68,7 +67,6 @@ const LeftPanel = () => {
         <NotesPanel display={getDisplay('notesPanel')} />
       </ErrorBoundary>
       <ThumbnailsPanel display={getDisplay('thumbnailsPanel')} />
-      <OutlinesPanel display={getDisplay('outlinesPanel')} />
       <BookmarksPanel display={getDisplay('bookmarksPanel')} />
       <LayersPanel display={getDisplay('layersPanel')} />
 

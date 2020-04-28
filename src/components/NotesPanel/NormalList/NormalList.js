@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
+import CustomEditor from 'src/components/Editor/Editor';
 
 const propTypes = {
   notes: PropTypes.array.isRequired,
@@ -51,6 +52,7 @@ const NormalList = React.forwardRef(
             {children(notes, index)}
           </React.Fragment>
         ))}
+        <CustomEditor/>
       </div>
     );
   },

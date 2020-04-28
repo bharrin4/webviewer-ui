@@ -1,0 +1,19 @@
+@import 'draft-js/dist/Draft';
+
+div.DraftEditor-root .DraftEditor-editorContainer .public-DraftEditor-content {
+    color: black;
+    overflow-y: auto;
+}
+
+div.DraftEditor-root {
+    margin-top: 2%;
+    margin-bottom: 2%;
+    height: 15vh;
+    border: 1px solid var(--border-color);
+    background: var(--primary-color);
+}
+
+div.DraftEditor-editorContainer,
+div.public-DraftEditor-content {
+    height: 100%;
+}

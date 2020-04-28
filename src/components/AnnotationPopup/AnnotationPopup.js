@@ -323,6 +323,16 @@ const AnnotationPopup = () => {
             dataElement="linkButton"
           />)}
           {
+            <ActionButton
+              dataElement="uploadFileAttachment"
+              title="Add Attachment"
+              img="ic_fileattachment_24px"
+              onClick={() => {
+                console.log('upload file attachment callback triggered');
+              }}
+            />
+          }
+          {
             firstAnnotation instanceof window.Annotations.FileAttachmentAnnotation &&
             (<ActionButton
               title="action.fileAttachmentDownload"
