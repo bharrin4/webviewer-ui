@@ -186,6 +186,7 @@ const NoteContentHeader = ({ annotation, setIsEditing }) => {
   const icon = getDataWithKey(mapAnnotationToKey(annotation)).icon;
   const color = annotation[iconColor]?.toHexString?.();
   const numberOfReplies = annotation.getReplies().length;
+  const formality = annotation.getCustomData('formality');
 
   return useMemo(
     () => (
@@ -208,6 +209,7 @@ const NoteContentHeader = ({ annotation, setIsEditing }) => {
             dayjs(annotation.DateCreated || new Date()).format(noteDateFormat)}
           {numberOfReplies > 0 && ` (${numberOfReplies})`}
         </div>
+        <div className="formalityToggle">{formality}</div>
         {isSelected && (
           <NotePopup annotation={annotation} setIsEditing={setIsEditing} />
         )}
@@ -224,6 +226,7 @@ const NoteContentHeader = ({ annotation, setIsEditing }) => {
       renderAuthorName,
       setIsEditing,
       sortStrategy,
+      formality
     ],
   );
 };
